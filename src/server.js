@@ -5,6 +5,7 @@ import chalk from "chalk";
 dotenv.config();
 
 import categoriesRouter from "./routers/categoriesRouters.js";
+import gamesRouter from "./routers/gamesRouters.js";
 
 const server = express();
 
@@ -13,6 +14,9 @@ server.use(express.json());
 
 //categories
 server.use(categoriesRouter);
+
+//games
+server.use(gamesRouter);
 
 server.listen(process.env.PORT, () => {
     console.log("==============================");
