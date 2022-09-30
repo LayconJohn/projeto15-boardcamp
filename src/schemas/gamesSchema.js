@@ -5,7 +5,7 @@ const nameGameSchema = joi.object({
 })
 
 const gamesBodySchema = joi.object({
-    name: joi.string().min(1).required(),
+    name: joi.string().required(),
     image: joi.string().required(),
     stockTotal: joi.number().required(),
     categoryId: joi.number().required(),
