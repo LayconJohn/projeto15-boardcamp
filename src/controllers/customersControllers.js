@@ -1,7 +1,5 @@
 import { connection } from "../db/database.js";
 
-import { customerSchema } from "../schemas/customersSchema.js";
-
 const getCustomers = async (req, res) => {
     const cpf = req.query.cpf;
 
