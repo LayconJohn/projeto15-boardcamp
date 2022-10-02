@@ -150,4 +150,29 @@ const finishRental = async (req, res) => {
    } 
 };
 
-export {postRental, getRentals, finishRental};
+const deleteRental = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.sendStatus(404);
+    }
+
+    try {
+        const rental = await connection.query('SELECT * FROM rentals WHERE id = $1', [id]);
+        if (!rental.rows[0]) {
+            return res.sendStatus(404);
+        }
+
+        if (rental.rows[0].returnDate !== null) {
+            return res.sendStatus(400);
+        }
+        await connection.query('DELETE FROM rentals WHERE id = $1', [id]);
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.error(error.message);
+        res.sendStatus(500);
+    }
+};
+
+export {postRental, getRentals, finishRental, deleteRental};
