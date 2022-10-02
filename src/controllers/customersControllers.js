@@ -48,7 +48,23 @@ const postCustomer = async (req, res) => {
         console.error(error.message);
         res.sendStatus(500);
     }
-
 };
 
-export {postCustomer, getCustomers, getCustomersById};
+const updateCustomer = async (req, res) => {
+    const { name, phone, cpf, birthday } = req.body;
+    const {id} = req.params;
+
+    try {
+        const user = await connection.query('SELECT * FROM customers WHERE cpf = $1;', [cpf]);
+        if (user.rows[0] && user.rows[0].id !== id) {
+            return res.sendStatus(409);
+        }
+        await connection.query('UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5', [name, phone, cpf, birthday, id]);
+        res.sendStatus(200);
+    } catch (error) {
+        console.error(error.message);
+        res.sendStatus(500);
+    }
+}
+
+export {postCustomer, getCustomers, getCustomersById, updateCustomer};
