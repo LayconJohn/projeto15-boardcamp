@@ -1,6 +1,7 @@
 import { connection } from "../db/database.js";
 
 import dayjs from "dayjs";
+import moment from "moment";
 
 const getRentals = async (req, res) => {
     const { customerId, gameId } = req.query;
@@ -118,4 +119,25 @@ const postRental = async (req, res) => {
     }
 };
 
-export {postRental, getRentals};
+const finishRental = async (req, res) => {
+    const { id } = req.params;
+
+    const returnDate = dayjs().format('YYYY-MM-DD');
+
+   try {
+    const rental = await connection.query('SELECT * FROM rentals WHERE id = $1', [id]);
+    const date = dayjs(rental.rows[0].rentDate.toLocaleString().slice(0,10)).format('YYYY-MM-DD');
+    const diff = moment(returnDate, "YYYY-MM-DD") - moment(date, "YYYY-MM-DD")
+    const delayFee = moment.duration(diff).asDays();
+    
+    
+    await connection.query('UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;', [returnDate, delayFee, id]);
+
+    res.sendStatus(200);
+   } catch (error) {
+    console.error(error.message);
+    res.sendStatus(500);
+   } 
+};
+
+export {postRental, getRentals, finishRental};
