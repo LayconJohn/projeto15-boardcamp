@@ -6,6 +6,7 @@ dotenv.config();
 
 import categoriesRouter from "./routers/categoriesRouters.js";
 import gamesRouter from "./routers/gamesRouters.js";
+import customersRouter from "./routers/customersRouters.js";
 
 const server = express();
 
@@ -17,6 +18,9 @@ server.use(categoriesRouter);
 
 //games
 server.use(gamesRouter);
+
+//Customers
+server.use(customersRouter);
 
 server.listen(process.env.PORT, () => {
     console.log("==============================");
