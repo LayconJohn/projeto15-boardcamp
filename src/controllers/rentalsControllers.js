@@ -126,9 +126,19 @@ const finishRental = async (req, res) => {
 
    try {
     const rental = await connection.query('SELECT * FROM rentals WHERE id = $1', [id]);
+    if (!rental.rows[0]) {
+        return res.sendStatus(404);
+    }
+
+    if (rental.rows[0].returnDate !== null) {
+        return res.sendStatus(400);
+    }
+
+    const game = await connection.query('SELECT * FROM games WHERE id = $1', [rental.rows[0].gameId])
+
     const date = dayjs(rental.rows[0].rentDate.toLocaleString().slice(0,10)).format('YYYY-MM-DD');
     const diff = moment(returnDate, "YYYY-MM-DD") - moment(date, "YYYY-MM-DD")
-    const delayFee = moment.duration(diff).asDays();
+    const delayFee = (moment.duration(diff).asDays()) * game.rows[0].pricePerDay;
     
     
     await connection.query('UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;', [returnDate, delayFee, id]);
