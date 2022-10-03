@@ -1,15 +1,16 @@
 import { connection } from "../db/database.js";
 
 const getCustomers = async (req, res) => {
-    const cpf = req.query.cpf;
+    const cpf = "%" + req.query.cpf + "%";
 
     try {
         let customers; 
         if (cpf) {
-            customers = await connection.query('SELECT * FROM customers WHERE cpf LIKE \'%$1%\';', [cpf]);
+            customers = await connection.query('SELECT * FROM customers WHERE cpf LIKE $1;', [cpf]);
+        } else {
+            customers = await connection.query('SELECT * FROM customers;');
         }
-        customers = await connection.query('SELECT * FROM customers;')
-
+        
         res.status(200).send(customers.rows);
         
     } catch (error) {

@@ -10,4 +10,4 @@ router.get("/customers/:id", getCustomersById);
 router.post("/customers", validateCustomerSchema, validateCustomerCPF ,postCustomer);
 router.put("/customers/:id", validateCustomerSchema, updateCustomer);
 
-export default router;
+export default router; 
